@@ -34,12 +34,12 @@ def generate_correction(input_text):
 
     outputs = model.generate(
     **inputs,
-    num_beams=5,              # sử dụng beam search để tạo phản hồi chất lượng ổn định
-    do_sample=False,          # không dùng sampling (loại bỏ ngẫu nhiên)
-    repetition_penalty=2.0,   # tránh lặp từ
-    no_repeat_ngram_size=3,   # không lặp cụm từ 3-gram
-    length_penalty=1.0,       # độ dài phản hồi tương đương đầu vào
-    max_length=inputs["input_ids"].size(1) + 5,  # chỉ dài hơn đầu vào tối đa 5 token
+    num_beams=5,             
+    do_sample=False,          
+    repetition_penalty=2.0,   
+    no_repeat_ngram_size=3,  
+    length_penalty=1.0,       
+    max_length=inputs["input_ids"].size(1) + 5,  
     early_stopping=True
 )
 
