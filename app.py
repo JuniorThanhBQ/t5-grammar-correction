@@ -29,7 +29,7 @@ text_input = st.text_area('Text to correct grammar for', height=300)
 
 def generate_correction(input_text):
     # Tokenize input
-    inputs = ["fix grammaticality in this sentence: " + input_text]
+    inputs = ["fix grammaticality in this sentence: " + input_text + "."]
     inputs = tokenizer(inputs, return_tensors="pt", truncation=True, max_length=max_input_length)
 
     outputs = model.generate(
