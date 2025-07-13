@@ -1,9 +1,10 @@
 import streamlit as st
-from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
 import torch
 
 
-model_name = "JuniorThanh/t5-base-medium-grammar-correction-ou"
+model_name = "JuniorThanh/t5_CoEdit_Model"
+
 max_input_length = 512
 
 st.set_page_config(page_title="NLPerfect", layout="wide")
@@ -13,10 +14,10 @@ st_model_load = st.text('Đang nạp dữ liệu')
 @st.cache_resource
 def load_model():
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
-    return tokenizer, model
+    gec = pipeline("text2text-generation", model="JuniorThanh/t5_CoEdit_Model", tokenizer=tokenizer)
+    return tokenizer, gec
 
-tokenizer, model = load_model()
+tokenizer, gec = load_model()
 st.success('Khởi tạo chương trình thành công!')
 st_model_load.text("")
 
@@ -26,7 +27,7 @@ if "corrected_text" not in st.session_state:
 
 
 # Header
-st.markdown("<h2 style='text-align:left'>Trường Đại học Mở TP.Hồ Chí Minh</h2>", unsafe_allow_html=True)
+st.markdown("<h2 style='text-align:left'>Ho Chi Minh Open University</h2>", unsafe_allow_html=True)
 st.markdown("<h3 style='text-align:left'>Giới thiệu chung</h3>", unsafe_allow_html=True)
 st.write("""
 Công cụ hỗ trợ kiểm tra ngữ pháp trong văn bản Tiếng Anh do nhóm NLPerfect thiết kế dựa trên huấn luyện từ hai mô hình CoEdit và T5, có khả năng phân tích những lỗi sai ngữ pháp từ cơ bản đến nâng cao. Đặc biệt, người dùng có thể sử dụng công cụ mà không lo bị giới hạn số lần dùng.
@@ -53,20 +54,11 @@ with col1:
 if text_input.isascii():
     def generate_correction(input_text):
         # Tokenize input
-        inputs = ["fix grammaticality in this sentence: " + input_text]
-        inputs = tokenizer(inputs, return_tensors="pt", truncation=True, max_length=max_input_length)
+        inputs = ["Fix the grammar: " + input_text]
 
-        outputs = model.generate(
-        **inputs,
-        num_beams=5,              # sử dụng beam search để tạo phản hồi chất lượng ổn định
-        do_sample=False,          # không dùng sampling (loại bỏ ngẫu nhiên)
-        repetition_penalty=2.0,   # tránh lặp từ
-        no_repeat_ngram_size=3,   # không lặp cụm từ 3-gram
-        length_penalty=1.0,       # độ dài phản hồi tương đương đầu vào
-        max_length=inputs["input_ids"].size(1) + 5,  # chỉ dài hơn đầu vào tối đa 5 token
-        early_stopping=True
-    )
-        decoded_outputs = tokenizer.batch_decode(outputs, skip_special_tokens=True)
+        outputs = gec(inputs,max_length=64)
+    
+        decoded_outputs = [out['generated_text'] for out in outputs]
         st.session_state.corrected_text = decoded_outputs[0].strip()
 
 
