@@ -14,7 +14,7 @@ st_model_load = st.text('Đang nạp dữ liệu')
 @st.cache_resource
 def load_model():
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-    gec = pipeline("text2text-generation", model="JuniorThanh/t5_CoEdit_Model", tokenizer=tokenizer, device=0)       # ép chạy trên CPU)
+    gec = pipeline("text2text-generation", model="JuniorThanh/t5_CoEdit_Model", tokenizer=tokenizer)       # ép chạy trên CPU)
     return tokenizer, gec
 
 tokenizer, gec = load_model()
