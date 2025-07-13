@@ -14,7 +14,7 @@ st_model_load = st.text('Đang nạp dữ liệu')
 @st.cache_resource
 def load_model():
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-    gec = pipeline("text2text-generation", model="JuniorThanh/t5_CoEdit_Model", tokenizer=tokenizer)
+    gec = pipeline("text2text-generation", model="JuniorThanh/t5_CoEdit_Model", tokenizer=tokenizer, device=0)       # ép chạy trên CPU)
     return tokenizer, gec
 
 tokenizer, gec = load_model()
@@ -27,7 +27,7 @@ if "corrected_text" not in st.session_state:
 
 
 # Header
-st.markdown("<h2 style='text-align:left'>Ho Chi Minh Open University</h2>", unsafe_allow_html=True)
+st.markdown("<h2 style='text-align:left'>Trường Đại học Mở TP.Hồ Chí Minh</h2>", unsafe_allow_html=True)
 st.markdown("<h3 style='text-align:left'>Giới thiệu chung</h3>", unsafe_allow_html=True)
 st.write("""
 Công cụ hỗ trợ kiểm tra ngữ pháp trong văn bản Tiếng Anh do nhóm NLPerfect thiết kế dựa trên huấn luyện từ hai mô hình CoEdit và T5, có khả năng phân tích những lỗi sai ngữ pháp từ cơ bản đến nâng cao. Đặc biệt, người dùng có thể sử dụng công cụ mà không lo bị giới hạn số lần dùng.
@@ -56,7 +56,7 @@ if text_input.isascii():
         # Tokenize input
         inputs = ["Fix the grammar: " + input_text]
 
-        outputs = gec(inputs,max_length=64)
+        outputs = gec(inputs,max_length=512)
     
         decoded_outputs = [out['generated_text'] for out in outputs]
         st.session_state.corrected_text = decoded_outputs[0].strip()
