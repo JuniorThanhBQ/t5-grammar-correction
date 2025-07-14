@@ -3,7 +3,7 @@ from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
 import torch
 
 
-model_name = "JuniorThanh/t5_CoEdit_Model"
+model_name = "JuniorThanh/t5-base-medium-grammar-correction-ou"
 
 max_input_length = 512
 
