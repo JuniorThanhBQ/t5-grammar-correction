@@ -3,7 +3,7 @@ from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
 import torch
 
 
-model_name = "JuniorThanh/t5-base-medium-grammar-correction-ou"
+model_name = "JuniorThanh/t5_CoEdit_Stable"
 
 max_input_length = 512
 
@@ -14,7 +14,7 @@ st_model_load = st.text('Đang nạp dữ liệu')
 @st.cache_resource
 def load_model():
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-    gec = pipeline("text2text-generation", model="JuniorThanh/t5-base-medium-grammar-correction-ou", tokenizer=tokenizer)       # ép chạy trên CPU)
+    gec = pipeline("text2text-generation", model="JuniorThanh/t5_CoEdit_Stable", tokenizer=tokenizer)       # ép chạy trên CPU)
     return tokenizer, gec
 
 tokenizer, gec = load_model()
