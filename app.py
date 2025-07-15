@@ -3,35 +3,6 @@ from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
 import torch
 import random
 
-PROMPTS = [
-    "Fix grammar",
-    "Fix grammar in this sentence",
-    "Fix grammar in the sentence",
-    "Fix grammar errors",
-    "Fix grammatical errors",
-    "Fix grammaticality",
-    "Fix all grammatical errors",
-    "Fix grammatical errors in this sentence",
-    "Fix grammar errors in this sentence",
-    "Fix grammatical mistakes in this sentence",
-    "Fix grammaticality in this sentence",
-    "Fix grammaticality of the sentence",
-    "Fix disfluencies in the sentence",
-    "Make the sentence grammatical",
-    "Make the sentence fluent",
-    "Fix errors in this text",
-    "Update to remove grammar errors",
-    "Remove all grammatical errors from this text",
-    "Improve the grammar of this text",
-    "Improve the grammaticality",
-    "Improve the grammaticality of this text",
-    "Improve the grammaticality of this sentence",
-    "Grammar improvements",
-    "Remove grammar mistakes",
-    "Remove grammatical mistakes",
-    "Fix the grammar mistakes",
-    "Fix grammatical mistakes"
-]
 
 model_name = "JuniorThanh/t5_CoEdit_Stable"
 
@@ -83,8 +54,7 @@ with col1:
 
 def generate_correction(input_text):
         # Tokenize input
-    prompt = random.choice(PROMPTS)
-    inputs = [f"{prompt}: " + input_text]
+    inputs = ["Fix grammar: " + input_text]
 
     outputs = gec(inputs,max_length=256)
     
