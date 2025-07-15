@@ -2,10 +2,39 @@ import streamlit as st
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
 import torch
 
+PROMPTS = [
+    "Fix grammar",
+    "Fix grammar in this sentence",
+    "Fix grammar in the sentence",
+    "Fix grammar errors",
+    "Fix grammatical errors",
+    "Fix grammaticality",
+    "Fix all grammatical errors",
+    "Fix grammatical errors in this sentence",
+    "Fix grammar errors in this sentence",
+    "Fix grammatical mistakes in this sentence",
+    "Fix grammaticality in this sentence",
+    "Fix grammaticality of the sentence",
+    "Fix disfluencies in the sentence",
+    "Make the sentence grammatical",
+    "Make the sentence fluent",
+    "Fix errors in this text",
+    "Update to remove grammar errors",
+    "Remove all grammatical errors from this text",
+    "Improve the grammar of this text",
+    "Improve the grammaticality",
+    "Improve the grammaticality of this text",
+    "Improve the grammaticality of this sentence",
+    "Grammar improvements",
+    "Remove grammar mistakes",
+    "Remove grammatical mistakes",
+    "Fix the grammar mistakes",
+    "Fix grammatical mistakes"
+]
 
 model_name = "JuniorThanh/t5_CoEdit_Stable"
 
-max_input_length = 512
+max_input_length = 256
 
 st.set_page_config(page_title="NLPerfect", layout="wide")
 st_model_load = st.text('Đang nạp dữ liệu')
@@ -14,7 +43,7 @@ st_model_load = st.text('Đang nạp dữ liệu')
 @st.cache_resource
 def load_model():
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-    gec = pipeline("text2text-generation", model="JuniorThanh/t5_CoEdit_Stable", tokenizer=tokenizer)       # ép chạy trên CPU)
+    gec = pipeline("text2text-generation", model=model_name, tokenizer=tokenizer)       # ép chạy trên CPU)
     return tokenizer, gec
 
 tokenizer, gec = load_model()
@@ -48,18 +77,18 @@ col1, col2 = st.columns([3, 2])
 
 with col1:
     st.markdown("### Văn Bản Đầu Vào")
-    text_input = st.text_area("Hãy nhập văn bản vào khung bên dưới.", height=300)
+    text_input = st.text_area("Hãy nhập văn bản vào khung bên dưới.", max_chars=256, help="Tối đa 256 ký tự.")
 
 
-if text_input.isascii():
-    def generate_correction(input_text):
+def generate_correction(input_text):
         # Tokenize input
-        inputs = ["Fix the grammar: " + input_text]
+    prompt = random.choice(PROMPTS)
+    inputs = [f"{prompt}: " + input_text]
 
-        outputs = gec(inputs,max_length=512)
+    outputs = gec(inputs,max_length=256)
     
-        decoded_outputs = [out['generated_text'] for out in outputs]
-        st.session_state.corrected_text = decoded_outputs[0].strip()
+    decoded_outputs = [out['generated_text'] for out in outputs]
+    st.session_state.corrected_text = decoded_outputs[0].strip()
 
 
 with col2:
@@ -71,17 +100,11 @@ with col2:
 
 # Nút "Kiểm tra ngữ pháp"
 if st.button("Kiểm tra ngữ pháp"):
-    if text_input.isascii():
-        if text_input.strip():  # tránh input rỗng
-            generate_correction(text_input)
-
-        with col2:
-            if st.session_state.corrected_text:
-                st.markdown(f"**{st.session_state.corrected_text}**")
-    else:
-        with col2:
-            if st.session_state.corrected_text:
-                st.markdown("Xuất hiện văn bản không hợp lệ trong input!")
+    if text_input.strip():  # tránh input rỗng
+        generate_correction(text_input)
+    with col2:
+        if st.session_state.corrected_text:
+            st.markdown(f"**{st.session_state.corrected_text}**")
         
 st.markdown("<h3 style='text-align:left;margin-top:5%'>Khảo sát sau khi sử dụng</h3>", unsafe_allow_html=True)
 st.write("""
