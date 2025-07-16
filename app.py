@@ -4,7 +4,7 @@ import torch
 import random
 
 
-model_name = "JuniorThanh/t5_CoEdit_Stable"
+model_name = "JuniorThanh/FlanT5_CoEdit_GEC_FinalResearch/checkpoint-2400"
 
 max_input_length = 256
 
