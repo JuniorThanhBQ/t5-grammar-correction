@@ -49,7 +49,7 @@ col1, col2 = st.columns([3, 2])
 
 with col1:
     st.markdown("### Văn Bản Đầu Vào")
-    text_input = st.text_area("Hãy nhập văn bản vào khung bên dưới.", max_chars=256, help="Tối đa 256 ký tự.")
+    text_input = st.text_area("Hãy nhập văn bản vào khung bên dưới.", max_chars=512, help="Tối đa 512 ký tự.")
 
 
 def generate_correction(input_text):
