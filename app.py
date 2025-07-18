@@ -4,7 +4,7 @@ import torch
 import random
 
 
-model_name = "JuniorThanh/T5_GEC_Final"
+model_name = "grammarly/coedit-large"
 
 max_input_length = 256
 
