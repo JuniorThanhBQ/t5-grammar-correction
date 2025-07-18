@@ -6,7 +6,7 @@ import random
 
 model_name = "grammarly/coedit-large"
 
-max_input_length = 256
+max_input_length = 512
 
 st.set_page_config(page_title="NLPerfect", layout="wide")
 st_model_load = st.text('Đang nạp dữ liệu')
