@@ -58,7 +58,8 @@ def generate_correction(input_text):
     inputs = ["Fix grammar: " + input_text]
 
     spell_checked_output = spell_corrector(inputs,max_length=256)
-    outputs = gec(spell_checked_output,max_length=256)
+    decoded_spell_outputs = [out['generated_text'] for out in spell_checked_output]
+    outputs = gec(decoded_spell_outputs[0].strip(),max_length=256)
     
     decoded_outputs = [out['generated_text'] for out in outputs]
     st.session_state.corrected_text = decoded_outputs[0].strip()
