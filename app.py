@@ -15,10 +15,11 @@ st_model_load = st.text('Loading data')
 @st.cache_resource
 def load_model():
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-    gec = pipeline("text2text-generation", model=model_name, tokenizer=tokenizer)       # force to run on CPU
-    return tokenizer, gec
+    gec = pipeline("text2text-generation", model=model_name, tokenizer=tokenizer)
+    spell_corrector = pipeline( "text2text-generation",model="oliverguhr/spelling-correction-english-base",tokenizer=tokenizer)
+    return tokenizer, gec, spell_corrector
 
-tokenizer, gec = load_model()
+tokenizer, gec, spell_corrector = load_model()
 st.success('Program initialized successfully!')
 st_model_load.text("")
 
@@ -56,7 +57,8 @@ def generate_correction(input_text):
         # Tokenize input
     inputs = ["Fix grammar: " + input_text]
 
-    outputs = gec(inputs,max_length=256)
+    spell_checked_output = spell_corrector(inputs,max_length=256)
+    outputs = gec(spell_checked_output,max_length=256)
     
     decoded_outputs = [out['generated_text'] for out in outputs]
     st.session_state.corrected_text = decoded_outputs[0].strip()
