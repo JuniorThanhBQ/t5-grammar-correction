@@ -16,9 +16,9 @@ st_model_load = st.text('Loading data')
 def load_model():
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     gec = pipeline("text2text-generation", model=model_name, tokenizer=tokenizer)
-    return tokenizer, gec, spell_corrector
+    return tokenizer, gec
 
-tokenizer, gec, spell_corrector = load_model()
+tokenizer, gec = load_model()
 st.success('Program initialized successfully!')
 st_model_load.text("")
 
