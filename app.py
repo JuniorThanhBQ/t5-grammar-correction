@@ -9,17 +9,17 @@ model_name = "grammarly/coedit-large"
 max_input_length = 512
 
 st.set_page_config(page_title="NLPerfect", layout="wide")
-st_model_load = st.text('Đang nạp dữ liệu')
+st_model_load = st.text('Loading data')
 
 
 @st.cache_resource
 def load_model():
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-    gec = pipeline("text2text-generation", model=model_name, tokenizer=tokenizer)       # ép chạy trên CPU)
+    gec = pipeline("text2text-generation", model=model_name, tokenizer=tokenizer)       # force to run on CPU
     return tokenizer, gec
 
 tokenizer, gec = load_model()
-st.success('Khởi tạo chương trình thành công!')
+st.success('Program initialized successfully!')
 st_model_load.text("")
 
 # Input section
@@ -28,28 +28,28 @@ if "corrected_text" not in st.session_state:
 
 
 # Header
-st.markdown("<h2 style='text-align:left'>Trường Đại học Mở TP.Hồ Chí Minh</h2>", unsafe_allow_html=True)
-st.markdown("<h3 style='text-align:left'>Giới thiệu chung</h3>", unsafe_allow_html=True)
+st.markdown("<h2 style='text-align:left'>Ho Chi Minh City Open University</h2>", unsafe_allow_html=True)
+st.markdown("<h3 style='text-align:left'>General Introduction</h3>", unsafe_allow_html=True)
 st.write("""
-Công cụ hỗ trợ kiểm tra ngữ pháp trong văn bản Tiếng Anh do nhóm NLPerfect thiết kế dựa trên huấn luyện từ hai mô hình CoEdit và T5, có khả năng phân tích những lỗi sai ngữ pháp từ cơ bản đến nâng cao. Đặc biệt, người dùng có thể sử dụng công cụ mà không lo bị giới hạn số lần dùng.
+This English grammar checking tool is developed by the NLPerfect team based on the CoEdit and T5 models, capable of analyzing grammar errors from basic to advanced levels. Notably, users can use this tool without worrying about usage limits.
 """)
 
-st.markdown("<h3 style='text-align:left'>Hướng dẫn sử dụng</h3>", unsafe_allow_html=True)
+st.markdown("<h3 style='text-align:left'>User Guide</h3>", unsafe_allow_html=True)
 html_instructions = """
 <ol style="text-align:left; margin-left:1em;">
-  <li>Nhập văn bản tiếng Anh trong cột "Văn Bản Đầu Vào" (Lưu ý: không nhập chữ tiếng Việt có dấu)</li>
-  <li>Bấm kiểm tra ngữ pháp sau khi hoàn tất nhập liệu.</li>
-  <li>Xem kết quả ở cột kết quả.</li>
+  <li>Enter English text in the "Input Text" column (Note: do not enter Vietnamese with diacritics)</li>
+  <li>Click the grammar check button after finishing your input.</li>
+  <li>View the result in the result column.</li>
 </ol>
 """
 st.markdown(html_instructions, unsafe_allow_html=True)
 
-# Hai cột cho input và output
+# Two columns for input and output
 col1, col2 = st.columns([3, 2])
 
 with col1:
-    st.markdown("### Văn Bản Đầu Vào")
-    text_input = st.text_area("Hãy nhập văn bản vào khung bên dưới.", max_chars=1024, help="Tối đa 1024 ký tự.", height=350)
+    st.markdown("### Input Text")
+    text_input = st.text_area("Please enter your text in the box below.", max_chars=1024, help="Maximum 1024 characters.", height=350)
 
 
 def generate_correction(input_text):
@@ -63,25 +63,25 @@ def generate_correction(input_text):
 
 
 with col2:
-    st.markdown("### Kết Quả")
+    st.markdown("### Result")
     if st.session_state.get("result"):
         st.markdown(st.session_state["result"])
     else:
-        st.markdown("_Kết quả kiểm tra sẽ hiển thị ở đây._")
+        st.markdown("_The check result will appear here._")
 
-# Nút "Kiểm tra ngữ pháp"
-if st.button("Kiểm tra ngữ pháp"):
-    if text_input.strip():  # tránh input rỗng
+# "Check Grammar" button
+if st.button("Check Grammar"):
+    if text_input.strip():  # avoid empty input
         generate_correction(text_input)
     with col2:
         if st.session_state.corrected_text:
             st.markdown(f"**{st.session_state.corrected_text}**")
         
-st.markdown("<h3 style='text-align:left;margin-top:5%'>Khảo sát sau khi sử dụng</h3>", unsafe_allow_html=True)
+st.markdown("<h3 style='text-align:left;margin-top:5%'>Post-Use Survey</h3>", unsafe_allow_html=True)
 st.write("""
-Cảm ơn mọi người đã dành thời gian sử dụng công cụ của nhóm mình. Nếu mọi người có điều cần góp ý thì bấm vào nút bên dưới để thực hiện khảo sát nhé, nhóm mình xin chân thành cảm ơn.
+Thank you for taking the time to use our tool. If you have any feedback, please click the button below to take the survey. We sincerely appreciate it.
 """)
-st.link_button("Khảo sát và phản hồi", "#", type="primary")
+st.link_button("Survey and Feedback", "#", type="primary")
 
 st.markdown("---")
-st.markdown("<div style='text-align:center;font-weight:700'>Công cụ hỗ trợ kiểm tra ngữ pháp Tiếng Anh của nhóm NLPerfect.</div>", unsafe_allow_html=True)
+st.markdown("<div style='text-align:center;font-weight:700'>English Grammar Checking Tool by the NLPerfect team.</div>", unsafe_allow_html=True)
